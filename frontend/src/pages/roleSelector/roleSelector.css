@@ -1,0 +1,132 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: micro;
+}
+
+
+h1{
+    font-size: 24px;
+    font-weight: 800;
+
+}
+label{
+    font-size: 16px;
+}
+
+
+/* body{
+    width: 100vw;
+    height: 100vh;
+    
+} */
+.wrapper{
+    height: 100vh;
+    width: 100vw;
+    border: 1px solid green;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    /* border-radius: 24px;
+    overflow: hidden; */
+}
+
+.img-wrapper{
+    background-image: url('../../assets//images/loginImg.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 600px;
+    width: 600px;
+    background-color: red;
+    border: 1px solid red !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    border-radius: 24px;
+}
+.content-wrapper{
+    background-color: rgba(255, 237, 237, 0.1);
+    /* border: 1px solid rgba(255, 0, 0, 0.5); */
+    height: 600px;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    padding: 24px;
+    gap: 24px;
+}
+.content-wrapper h1{
+    font-size: 32px;
+    font-weight: bolder;
+    font-family: dosis;
+    letter-spacing: 4px;
+    width: 100%;
+    text-align: center;
+}
+.content-wrapper label{
+    font-size: 16px;
+    font-family: dosis;
+    display: block;
+    margin-bottom: 8px;
+}
+.content-wrapper .role-select{
+    /* border: 1px solid red; */
+    width: 100% !important;
+}
+
+.content-wrapper  .role-select select{
+    padding: 16px 0;
+    width: 100%;
+    border-radius: 12px;
+    padding-inline-start: 16px;
+}
+.form{
+    width: 100%;
+    /* border: 1px solid red; */
+}
+.form input{
+    width: 100%;
+    font-size: 16px;
+    padding: 16px 0;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    padding-inline-start: 16px;
+}
+
+/* .form button{
+    border: 1px solid red;
+    margin-top: 24px;
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px 0;
+    background-color: red;
+    color: white;
+} */
+
+
+.btn{
+    padding: 1rem 2rem;
+    width: 100%;
+  }
+  .btn-primary{
+    background-color: red !important;
+    color: white;
+  }
+  
+  .btn-text{
+    border: none;
+    background-color: transparent;
+    color: black;
+  }
+  .btn-danger{
+    padding: 0;
+    background-color: transparent;
+    color: red;
+  }
+
+

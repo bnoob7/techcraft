@@ -1,0 +1,55 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.body{
+    background-color: white;
+    background-image: url('../../assets/images/background.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.form-wrapper{
+    width: 100%;
+    display: flex;
+    /* border: 1px solid red; */
+    max-width: 1100px !important;
+    margin: 32px auto;
+    gap: 24px;
+}
+.form-wrapper h1{
+    margin-bottom: 24px !important;
+    font-family: dosis;
+    color: white;
+}
+
+.form-wrapper input{
+    /* border: 11px solid green; */
+    width: 100%;
+
+}
+.form .signup, .form .login{
+    width: 100%;
+}
+.table-wrapper{
+    /* border: 1px solid red; */
+    max-width: 1100px;
+    margin: 0 auto;
+    color: white;
+}
+.table-wrapper table {
+    overflow: hidden;
+    border-radius: 24px;
+    width: 100% !important;
+
+}
+
+.table-wrapper table th{
+    background-color: red;
+    font-family: dosis;
+    letter-spacing: 2px;
+    color: white;
+    padding: 16px;
+}
+

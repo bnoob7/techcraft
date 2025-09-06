@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Micro+5&display=swap');
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: micro;
+}
+h1, h2, h3, h4{
+  font-family: micro;
+  text-transform: capitalize;
+  font-weight: 700
+}
+
+p, a, li{
+  font-family: dosis;
+  font-weight: 400;
+}

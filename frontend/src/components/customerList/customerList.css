@@ -1,0 +1,9 @@
+table, thead, th, td{
+    border-collapse: collapse;
+}
+table{
+    width: 100vw;
+}
+td{
+    padding: 1rem;
+}

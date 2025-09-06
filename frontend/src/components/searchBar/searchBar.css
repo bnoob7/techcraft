@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Micro+5&display=swap');
+
+.searchbar-container{
+    margin: auto;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+    /* border: 1px solid red; */
+}
+
+.input-wrapper{
+    background-color: rgba(84, 21, 21, 0.2);
+    width: 100%;
+    border-radius: 10px;
+    height: 4rem;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 1px  solid red;
+    
+    box-shadow: 4px 4px 24px 16px rgba(126, 0, 0, 0.1);
+    backdrop-filter: blur(4px); /* Apply the blur effect */
+    -webkit-backdrop-filter: blur(10px);
+}
+.input-wrapper input{
+    color: white;
+    background-color: transparent;
+    font-family: dosis;
+    border: none;
+    height: 100%;
+    font-size: 1.25rem;
+    width: 100%;
+    /* border: 1px solid red; */
+}
+.input-wrapper input:focus{
+    outline: none;
+}
+.input-wrapper input:focus::placeholder{
+    color: transparent;
+}
+#search-icon{
+    color: white;
+    font-size: 24px;
+}
+button{
+    background-color: transparent !important;
+    width: fit-content !important;
+}
+
