@@ -35,13 +35,13 @@ app.use(express.json());
 app.use(bodyParser.json()); // to parse JSON bodies
 
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-}));
+// app.use(cors({
+//   origin: 'http://localhost:3306',
+// }));
 
 
 // whitelisting all domains
-// app.use(cors());   
+app.use(cors());   
 
 
 
