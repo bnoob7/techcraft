@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import "./productList.css"
 
 const fetchProducts = async (ownerId) => {
     const response = await axios.get(`http://localhost:5000/products?owner_id=${ownerId}`);
@@ -20,7 +21,7 @@ const ProductList = ({ ownerId }) => {
     return (
         <div>
             <h1>Product List</h1>
-            <table border="1">
+            <table className="table">
                 <thead>
                     <tr>
                         <th>Product ID</th>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import "./productForm.css";
 
 const ProductForm = ({ owner_id }) => {
     const [productName, setProductName] = useState("");
@@ -59,7 +60,7 @@ const ProductForm = ({ owner_id }) => {
     return (
         <form onSubmit={handleSubmit}>
             <h2>Add Product</h2>
-            <div>
+            <div className="form-wrapper">
                 <label>Product Name:</label>
                 <input
                     type="text"
@@ -68,7 +69,7 @@ const ProductForm = ({ owner_id }) => {
                     required
                 />
             </div>
-            <div>
+            <div className="form-wrapper">
                 <label>Description:</label>
                 <textarea
                     value={description}
@@ -76,7 +77,7 @@ const ProductForm = ({ owner_id }) => {
                     required
                 />
             </div>
-            <div>
+            <div className="form-wrapper">
                 <label>Price:</label>
                 <input
                     type="number"
@@ -85,7 +86,7 @@ const ProductForm = ({ owner_id }) => {
                     required
                 />
             </div>
-            <div>
+            <div className="form-wrapper">
                 <label>Photo:</label>
                 <input
                     type="file"
@@ -93,7 +94,7 @@ const ProductForm = ({ owner_id }) => {
                     required
                 />
             </div>
-            <div>
+            <div className="form-wrapper">
                 <label>Shop Name:</label>
                 <input
                     type="text"

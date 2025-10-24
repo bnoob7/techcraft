@@ -1,0 +1,14 @@
+
+.table {
+  /* Forces the browser to calculate column widths based on the table's width, not content. */
+  table-layout: fixed;
+  /* Ensures the table takes up the necessary width, e.g., the container's full width. */
+  width: inherit;
+  border: 1px solid red;
+}
+
+.table th {
+  width: 50px;
+  word-wrap: break-word;
+  border: 1px solid green;
+}

@@ -1,88 +1,41 @@
-* {
-    margin: 0;
-    padding: 0;
+.owner-container{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  padding: 16px;
+  gap: 24px;
+  
 }
 
-.owner-container {
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-}
-.top{
-    background-color: red;
-
-}
-.welcome-message{
-    font-size: 16px;
-    font-weight: 300;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding-bottom: 8px;
+.owner-container .sidebar{
+  padding: 16px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-elevate);
+  border-radius: 8px;
 }
 
-
-.owner-form form {
-    max-width: 1100px !important;
-    margin: 0 auto;
-    /* border: 1px solid green !important; */
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+.owner-container .sidebar .logo{
+  max-width: 150px;
 }
 
-.owner-form form label {
-    display: block;
+.owner-container .right{
+  width: 100%;
+  background-color: var(--background-elevate);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 24px;
+  overflow: scroll;
 }
 
-.owner-form form input,
-textarea {
-    width: 100%;
-    padding: 8px 0;
-    padding-inline: 12px;
-}
-
-textarea {
-    height: 42px;
-    resize: none;
-}
-
-button {
-    padding: 16px;
-    background-color: red;
-    color: white;
-    border-radius: 12px;
-    width: 200px;
-}
-
-.owner-form h1 {
-    font-size: 64px;
-    font-family: dosis;
-}
-
-
-.owner-container table {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.product-table{
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-
-
-
-.orders-section{
-    max-width: 1100px;
-    /* border: 1px solid red; */
-    margin: 0 auto;
-}
-.orders-section h2{
-    margin-bottom: 1rem;
-}
-.orders-section tr, td, th, thead, table{
-    border: 1px solid black;
-    border-collapse: collapse;
+.owner-container .right .wrap{
+  display: flex;
+  flex-direction: column;
+  border:  1px solid red;
+  width: 100%;
+  height: auto;
+  gap: 24px;
 }

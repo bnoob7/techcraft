@@ -1,6 +1,6 @@
 import React from 'react'
-import icons from '../../assets/icons/icons.js'
-import FoodieOrange from '../../assets/logo/foodie-orange.png';
+import icons from '../../../public/assets/icons/icons.js'
+import Logo from './../../../public/logo/logo.svg'
 
 import './footer.css'
 
@@ -10,7 +10,7 @@ const Footer = () => {
         <><div className="footer">
                 <div className="contain">
                 <div className="col social">
-                        <a href="#"><img src={FoodieOrange} alt="" /></a>
+                        <a href="#"><img src={Logo} alt="" /></a>
                         <h1>Social Links</h1>
                         <ul>
                         <li>

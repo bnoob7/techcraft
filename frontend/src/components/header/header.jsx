@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./header.css";
-import Foodie from "../../assets/logo/Foodie.png";
+import Logo from "../../../public/logo/logo.svg";
 import { FaShoppingBag } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -44,7 +44,7 @@ const Header = ({ userId }) => {  // Receive userId as a prop
     <div className="container">
       <header>
         <a className="logo" href="#">
-          <img src={Foodie} alt="Logo" />
+          <img src={Logo} alt="Logo" />
         </a>
         <div className="pages">
           <ul>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../components/header/header";
+// import Header from "../../components/header/header";
 import ProductForm from "../../components/productForm/productForm";
 import ProductList from "../../components/productList/productList";
+import logo from "./../../../public/logo/logo.svg";
 import axios from "axios";
 import "./owner.css";
 
@@ -53,51 +54,57 @@ const Owner = () => {
 
   return (
     <div className="owner-container">
-      <div className="top">
-        <Header />
-        <div className="welcome-message">
-          <p>Welcome, {ownerName}!</p> {/* Display the owner name */}
-        </div>
+
+      <div className="owner-form sidebar">
+        <a className="logo" href="#">
+          <img className="logo" src={logo} alt="Logo" />
+        </a>
       </div>
 
-      <div className="owner-form">
-        <ProductForm owner_id={ownerId} />
-      </div>
-      <div className="product-table">
-        <ProductList ownerId={ownerId} />
-      </div>
 
-      {/* Display orders */}
-      <div className="orders-section">
-        <h2>Orders List</h2>
-        <table className="orders-table">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer Name</th>
-              <th>Shop Name</th>
-              <th>Total Amount</th>
-              <th>Order Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length > 0 ? (
-              orders.map((order) => (
-                <tr key={order.order_id}>
-                  <td>{order.order_id}</td>
-                  <td>{order.customer_name}</td> {/* Display customer name */}
-                  <td>{order.shop_name}</td>
-                  <td>{order.total_amount}</td>
-                  <td>{new Date(order.created_at).toLocaleString()}</td> {/* Display order time */}
+      <div className="product-table right">
+        <ProductForm  owner_id={ownerId} />
+
+
+        <div className="wrap">
+          <div className="welcome-message">
+            <p>Welcome, {ownerName}!</p> {/* Display the owner name */}
+          </div>
+          <ProductList ownerId={ownerId} />
+
+          {/* Display orders */}
+          <div className="orders-section">
+            <h2>Orders List</h2>
+            <table className="orders-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer Name</th>
+                  <th>Shop Name</th>
+                  <th>Total Amount</th>
+                  <th>Order Date</th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5">No orders placed yet.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {orders.length > 0 ? (
+                  orders.map((order) => (
+                    <tr key={order.order_id}>
+                      <td>{order.order_id}</td>
+                      <td>{order.customer_name}</td> {/* Display customer name */}
+                      <td>{order.shop_name}</td>
+                      <td>{order.total_amount}</td>
+                      <td>{new Date(order.created_at).toLocaleString()}</td> {/* Display order time */}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5">No orders placed yet.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
