@@ -1,5 +1,4 @@
 // src/components/Navigation.jsx
-import React from "react";
 import { Link } from "react-router-dom";
 // import productList from "./productList";
 

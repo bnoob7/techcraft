@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import RoleSelector from './pages/roleSelector/roleSelector'
 
 import Home from './pages/homepage/homepage'
-import OwnerHome from './pages/owner/owner';
-import AdminHome from './pages/admin/admin';
+import Owner from './pages/owner/owner';
+import Admin from './pages/admin/admin';
 import CartPage from './pages/cart/cart'
 
 import './app.css'
@@ -29,8 +29,8 @@ const App = () => {
 
 
           <Route path="/home" element={<Home />} /> 
-          <Route path="/admin-home" element={<AdminHome />} />
-          <Route path="/owner-home" element={<OwnerHome />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/owner" element={<Owner />} />
           <Route path="/cart/:userId" element={<CartPage />} />
 
 
