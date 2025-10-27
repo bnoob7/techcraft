@@ -63,7 +63,9 @@ const Owner = () => {
 
 
       <div className="product-table right">
-        <ProductForm  owner_id={ownerId} />
+        <div className="product_form">
+          <ProductForm  owner_id={ownerId} />
+        </div>
 
 
         <div className="wrap">
@@ -73,9 +75,9 @@ const Owner = () => {
           <ProductList ownerId={ownerId} />
 
           {/* Display orders */}
-          <div className="orders-section">
+          <div className="orders_section">
             <h2>Orders List</h2>
-            <table className="orders-table">
+            <table className="orders_table">
               <thead>
                 <tr>
                   <th>Order ID</th>

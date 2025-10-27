@@ -2,11 +2,12 @@ form{
     /* border: 1px solid red; */
     max-width: 300px;
 }
-input, textarea{
+input, textarea, select{
     background-color: var(--table-odd);
     outline: none;
     border: 1px solid var(--grey-900);
     height: 44px;
+    color: var(--text-para);
     
 } 
 textarea{

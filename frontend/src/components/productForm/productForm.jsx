@@ -1,42 +1,70 @@
 import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+// Import useQueryClient to access the cache
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import "./productForm.css";
 
-const ProductForm = ({ owner_id }) => {
+// 💡 Pass a new prop 'onSubmissionSuccess' to close the form and handle logic
+const ProductForm = ({ ownerId, onSubmissionSuccess }) => {
+    // Access the query client for cache invalidation
+    const queryClient = useQueryClient();
+    
     const [productName, setProductName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [photo, setPhoto] = useState(null);
     const [shopName, setShopName] = useState("");
+    const [category, setCategory] = useState(""); 
 
-    // React Query mutation for adding a new product
+    const CATEGORIES = [
+    "Mobile", 
+    "Processor (CPU)",
+    "Motherboard",
+    "Graphics Card (GPU)",
+    "Memory (RAM)",
+    "Storage",
+    "Power Supply (PSU)",
+    "Cabinet / Case",
+    "Cooling System",
+    "Acessories",
+    "Other"
+];
+
+
+
+
+
     const mutation = useMutation({
         mutationFn: async (newProduct) => {
-            // Sending POST request to the backend
             const formData = new FormData();
             Object.keys(newProduct).forEach((key) => {
                 formData.append(key, newProduct[key]);
             });
-            const response = await axios.post("http://localhost:5000/products", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
             
+            const response = await axios.post("http://localhost:5000/products", formData);
             return response.data;
         },
         
-        
         onSuccess: () => {
+            // 1. Invalidate the cache to trigger ProductList re-fetch
+            queryClient.invalidateQueries(["products", ownerId]); 
+            
             alert("Product added successfully!");
-            // Optionally reset the form
+            
+            // 2. Call the prop function to close the form in the parent component
+            onSubmissionSuccess(); 
+
+            // Reset local state (optional, as the form closes)
             setProductName("");
             setDescription("");
             setPrice("");
             setPhoto(null);
             setShopName("");
+            setCategory(""); 
         },
         onError: (error) => {
-            alert(`Error adding product: ${error.message}`);
+            const errorMessage = error.response?.data || error.message;
+            alert(`Error adding product: ${errorMessage}`);
         },
     });
 
@@ -51,10 +79,13 @@ const ProductForm = ({ owner_id }) => {
             description,
             price,
             photo,
-            owner_id,
+            // 💡 Fix: The prop is called 'ownerId', but the backend expects 'owner_id'. 
+            // We ensure we send 'owner_id' to match the backend controller's req.body structure.
+            owner_id: ownerId, 
             shop_name: shopName,
+            category, 
         };
-        mutation.mutate(newProduct); // Trigger the mutation
+        mutation.mutate(newProduct);
     };
 
     return (
@@ -85,6 +116,20 @@ const ProductForm = ({ owner_id }) => {
                     onChange={(e) => setPrice(e.target.value)}
                     required
                 />
+            </div>
+            <div className="form-wrapper">
+                <label>Category:</label>
+                <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    required
+                    className="form-select"
+                >
+                    <option value="" disabled>Select a Category</option>
+                    {CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                </select>
             </div>
             <div className="form-wrapper">
                 <label>Photo:</label>

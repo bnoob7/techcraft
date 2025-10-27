@@ -1,14 +1,43 @@
+.product_list{
+display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.head{
+  display: flex;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+  padding: 0;
+  margin: 0;
+}
 
 .table {
-  /* Forces the browser to calculate column widths based on the table's width, not content. */
   table-layout: fixed;
-  /* Ensures the table takes up the necessary width, e.g., the container's full width. */
-  width: inherit;
-  border: 1px solid red;
+  width: 100%;
+  /* border: 1px solid red; */
 }
 
 .table th {
-  width: 50px;
+  width: inherit;
   word-wrap: break-word;
-  border: 1px solid green;
+  /* border: 1px solid var(--text-para); */
+  color: var(--text-head);
+  padding: 16px 8px;
+  text-align: center;
 }
+
+.table td{
+  /* border: 1px solid var(--text-para); */
+  color: var(--text-para);
+}
+ .image{
+  height: 100px !important;
+  width: 100% !important;
+  /* border: 1px solid red; */
+  margin: 0 auto;
+}
+
+.pid{
+  width: 40px !important;
+}
+
