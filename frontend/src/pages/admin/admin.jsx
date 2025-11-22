@@ -1,4 +1,3 @@
-import React from 'react'
 import Header from '../../components/header/header'
 import CustomerList from '../../components/customerList/customerList'
 import SignupForm from '../../components/customerForm/signupForm'

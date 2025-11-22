@@ -63,15 +63,16 @@ const Owner = () => {
 
 
       <div className="product-table right">
+        <div className="topbar">
+            <p>Welcome, {ownerName}!</p> {/* Display the owner name */}
+        </div>
         <div className="product_form">
           <ProductForm  owner_id={ownerId} />
         </div>
 
 
         <div className="wrap">
-          <div className="welcome-message">
-            <p>Welcome, {ownerName}!</p> {/* Display the owner name */}
-          </div>
+          
           <ProductList ownerId={ownerId} />
 
           {/* Display orders */}

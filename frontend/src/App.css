@@ -3,19 +3,3 @@
   min-height: 100vh;
   /* background-color: #e4e4e4; */
 }
-.btn{
-  width: 1rem 2rem;
-}
-.btn-primary{
-  background-color: red;
-  color: white;
-}
-
-.btn-text{
-  border: none;
-  background-color: transparent;
-  color: black;
-  cursor: pointer;
-
-
-}

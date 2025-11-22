@@ -48,8 +48,8 @@ const RoleSelector = () => {
                     <option value="owner">Owner</option>
                 </select>
             </div>
-            <div className="form">{renderForm()}</div>
-            <button className="btn btn-danger toggle-button" onClick={() => setIsLogin(!isLogin)}>
+            {renderForm()}
+            <button className="btn-text" onClick={() => setIsLogin(!isLogin)}>
                 Switch to {isLogin ? "Signup" : "Login"}
             </button>
             </div>

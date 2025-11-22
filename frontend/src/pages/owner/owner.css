@@ -26,17 +26,13 @@ table, th, td, tr, td{
 }
 
 .owner-container .right{
-  width: inherit;
-  background-color: var(--background-elevate);
-  padding: 16px;
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
   gap: 24px;
-  /* overflow: scroll; */
-  /* overflow-y: scroll;
-  overflow-x: auto; */
-  /* border: 1px solid green; */
+  padding: 16px;
+  overflow: scroll;
+  background-color: var(--background-elevate);
+  border: 1px solid green;
 }
 
 
@@ -50,7 +46,7 @@ table, th, td, tr, td{
 .owner-container .right .wrap{
   display: flex;
   flex-direction: column;
-  /* border:  1px solid red; */
+  border:  1px solid red;
   width: 100%;
   height: auto;
   gap: 24px;
