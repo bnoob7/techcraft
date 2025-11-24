@@ -7,10 +7,10 @@
   
 }
 
-table, th, td, tr, td{
+/* table, th, td, tr, td{
   border-collapse: collapse;
   border: 1px solid var(--grey-900);
-}
+} */
 
 .owner-container .sidebar{
   padding: 16px;
@@ -25,28 +25,92 @@ table, th, td, tr, td{
   max-width: 150px;
 }
 
+.owner-container .sidebar .sidebar-nav{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.owner-container .sidebar .sidebar-nav .nav-btn{
+  padding: 12px 16px;
+  border: 1px solid var(--grey-900);
+  background-color: transparent;
+  color: var(--text-para);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.owner-container .sidebar .sidebar-nav .nav-btn:hover{
+  background-color: var(--grey-900);
+  color: var(--text-head);
+}
+
+.owner-container .sidebar .sidebar-nav .nav-btn.active{
+  background-color: var(--primary-color, #007bff);
+  color: white;
+  border-color: var(--primary-color, #007bff);
+}
+
 .owner-container .right{
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
-  padding: 16px;
-  overflow: scroll;
-  background-color: var(--background-elevate);
-  border: 1px solid green;
+  gap: 20px;
+  overflow: auto;
 }
 
+.right .topbar{
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: var(--background-elevate);
+  justify-content: space-between;
+  align-items: center;
+  height: fit-content;
+}
+.right .topbar .name{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.right .topbar .name h2{
+  color: var(--text-head);
+  font-weight: 600;
+  font-size: 28px;
+}
+.right .topbar .name p{
+  color: var(--text-para);
+  font-size: 16px;
+}
+.right .topbar .profile{
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--grey-900);
+  overflow: hidden;
+}
 
 .owner-container .right .product_form{
-  border: 1px solid blue;
   padding: 16px;
   width: fit-content;
   display: none;
 }
 
+.owner-container .right .bottom-bar{
+  background-color: var(--background-elevate);
+  padding: 16px;
+  border-radius: 16px;
+}
+
 .owner-container .right .wrap{
   display: flex;
   flex-direction: column;
-  border:  1px solid red;
   width: 100%;
   height: auto;
   gap: 24px;
@@ -70,18 +134,24 @@ table, th, td, tr, td{
   /* border: 1px solid green; */
   
 }
+thead tr th{
+  background-color: var(--table-odd);
+}
 
 .orders_section .orders_table thead tr th{
   color: var(--text-head)!important;
 }
 
 .orders_section .orders_table thead tr th, tbody tr{
-  /* width: inherit; */
-  /* border: 1px solid var(--text-para); */
   padding: 16px 8px;
   color: var(--text-para);
 }
+.sidebar-nav button{
+  width: 100% !important;
+  border: none;
 
-/* .orders_section tr{
-  width: inherit;
-} */
+}
+
+.sidebar-nav button:active{
+  background-color: var(--primary-elevate) !important;
+}

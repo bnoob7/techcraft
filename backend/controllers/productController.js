@@ -217,7 +217,180 @@ export const getOwnerByShopName = (req, res) => {
             return res.status(404).json({ message: "Shop not found." });
         }
 
-        // Send the owner_id as response
         res.status(200).json({ owner_id: result[0].owner_id });
     });
 };
+
+// 💡 NEW: Get PC build suggestions based on budget
+export const getPCBuildSuggestions = (req, res) => {
+    const { budget } = req.query;
+
+    if (!budget || isNaN(budget)) {
+        return res.status(400).json({ message: "Valid budget is required" });
+    }
+
+    const budgetAmount = parseInt(budget, 10);
+
+    // Fetch all products grouped by category within budget
+    const sql = `
+        SELECT * FROM products 
+        WHERE category IN ('cpu', 'gpu', 'ram', 'motherboard', 'psu', 'storage', 'cooling')
+        AND price <= ?
+        ORDER BY category ASC, price ASC
+    `;
+
+    db.query(sql, [budgetAmount], (err, products) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Error fetching products" });
+        }
+
+        if (products.length === 0) {
+            return res.status(404).json({ message: "No products found within budget" });
+        }
+
+        // Group products by category
+        const categories = {};
+        products.forEach((product) => {
+            if (!categories[product.category]) {
+                categories[product.category] = [];
+            }
+            categories[product.category].push(product);
+        });
+
+        // Validate that we have all required categories
+        const requiredCategories = [
+            "cpu",
+            "gpu",
+            "ram",
+            "motherboard",
+            "psu",
+            "storage",
+        ];
+        const missingCategories = requiredCategories.filter(
+            (cat) => !categories[cat] || categories[cat].length === 0
+        );
+
+        if (missingCategories.length > 0) {
+            return res.status(404).json({
+                message: `Not enough products to build a PC. Missing: ${missingCategories.join(
+                    ", "
+                )}`,
+            });
+        }
+
+        // Generate 5 different PC build configurations
+        const builds = [];
+
+        builds.push(generateBuild(categories, budgetAmount, "budget"));
+        builds.push(generateBuild(categories, budgetAmount, "balanced"));
+        builds.push(generateBuild(categories, budgetAmount, "gpu-focused"));
+        builds.push(generateBuild(categories, budgetAmount, "cpu-focused"));
+        builds.push(generateBuild(categories, budgetAmount, "high-end"));
+
+        res.status(200).json(builds);
+    });
+};
+
+// Helper function to generate a single PC build
+function generateBuild(categories, budget, buildType) {
+    const components = {};
+    let totalCost = 0;
+
+    // Selection strategy based on build type
+    const strategies = {
+        budget: {
+            cpu: selectByIndex(categories.cpu, 0),
+            gpu: selectByIndex(categories.gpu, 0),
+            ram: selectByIndex(categories.ram, 0),
+            motherboard: selectByIndex(categories.motherboard, 0),
+            psu: selectByIndex(categories.psu, 0),
+            storage: selectByIndex(categories.storage, 0),
+            cooling: categories.cooling ? selectByIndex(categories.cooling, 0) : null,
+        },
+        balanced: {
+            cpu: selectByIndex(categories.cpu, Math.floor(categories.cpu.length / 2)),
+            gpu: selectByIndex(categories.gpu, Math.floor(categories.gpu.length / 2)),
+            ram: selectByIndex(categories.ram, Math.floor(categories.ram.length / 2)),
+            motherboard: selectByIndex(
+                categories.motherboard,
+                Math.floor(categories.motherboard.length / 2)
+            ),
+            psu: selectByIndex(categories.psu, Math.floor(categories.psu.length / 2)),
+            storage: selectByIndex(
+                categories.storage,
+                Math.floor(categories.storage.length / 2)
+            ),
+            cooling: categories.cooling
+                ? selectByIndex(categories.cooling, Math.floor(categories.cooling.length / 2))
+                : null,
+        },
+        "gpu-focused": {
+            gpu: selectByIndex(categories.gpu, categories.gpu.length - 1),
+            cpu: selectByIndex(categories.cpu, Math.floor(categories.cpu.length / 2)),
+            ram: selectByIndex(categories.ram, Math.floor(categories.ram.length / 2)),
+            motherboard: selectByIndex(categories.motherboard, 0),
+            psu: selectByIndex(categories.psu, categories.psu.length - 1),
+            storage: selectByIndex(categories.storage, 0),
+            cooling: categories.cooling ? selectByIndex(categories.cooling, 0) : null,
+        },
+        "cpu-focused": {
+            cpu: selectByIndex(categories.cpu, categories.cpu.length - 1),
+            gpu: selectByIndex(categories.gpu, Math.floor(categories.gpu.length / 2)),
+            ram: selectByIndex(categories.ram, categories.ram.length - 1),
+            motherboard: selectByIndex(categories.motherboard, 0),
+            psu: selectByIndex(categories.psu, categories.psu.length - 1),
+            storage: selectByIndex(categories.storage, 0),
+            cooling: categories.cooling ? selectByIndex(categories.cooling, 0) : null,
+        },
+        "high-end": {
+            cpu: selectByIndex(categories.cpu, categories.cpu.length - 1),
+            gpu: selectByIndex(categories.gpu, categories.gpu.length - 1),
+            ram: selectByIndex(categories.ram, categories.ram.length - 1),
+            motherboard: selectByIndex(
+                categories.motherboard,
+                categories.motherboard.length - 1
+            ),
+            psu: selectByIndex(categories.psu, categories.psu.length - 1),
+            storage: selectByIndex(categories.storage, categories.storage.length - 1),
+            cooling: categories.cooling
+                ? selectByIndex(categories.cooling, categories.cooling.length - 1)
+                : null,
+        },
+    };
+
+    const strategy = strategies[buildType] || strategies.balanced;
+
+    // Collect selected components
+    Object.values(strategy).forEach((component) => {
+        if (component) {
+            components[component.category] = component;
+            totalCost += parseFloat(component.price);
+        }
+    });
+
+    // Ensure total cost doesn't exceed budget
+    if (totalCost > budget) {
+        Object.keys(components).forEach((category) => {
+            if (components[category].price > budget * 0.2) {
+                components[category] = selectByIndex(categories[category], 0);
+            }
+        });
+        totalCost = Object.values(components).reduce(
+            (sum, c) => sum + parseFloat(c.price),
+            0
+        );
+    }
+
+    return {
+        buildType,
+        totalCost: totalCost.toFixed(2),
+        remainingBudget: (budget - totalCost).toFixed(2),
+        components: Object.values(components),
+    };
+}
+
+// Helper to safely select by index
+function selectByIndex(array, index) {
+    return array[Math.min(index, array.length - 1)];
+}

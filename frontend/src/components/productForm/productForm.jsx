@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // Import useQueryClient to access the cache
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -14,7 +14,23 @@ const ProductForm = ({ ownerId, onSubmissionSuccess }) => {
     const [price, setPrice] = useState("");
     const [photo, setPhoto] = useState(null);
     const [shopName, setShopName] = useState("");
-    const [category, setCategory] = useState(""); 
+    const [category, setCategory] = useState("");
+    
+    // Fetch owner's company name on component mount
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token && ownerId) {
+            axios
+                .get(`http://localhost:5000/owner/${ownerId}`)
+                .then((response) => {
+                    // Set the shop name to the owner's company name
+                    setShopName(response.data.company_name);
+                })
+                .catch((error) => {
+                    console.error("Error fetching owner details:", error);
+                });
+        }
+    }, [ownerId]); 
 
     const CATEGORIES = [
     "Mobile", 
@@ -139,14 +155,17 @@ const ProductForm = ({ ownerId, onSubmissionSuccess }) => {
                     required
                 />
             </div>
+            {/* Shop Name is automatically set from owner's company name */}
             <div className="form-wrapper">
                 <label>Shop Name:</label>
                 <input
                     type="text"
                     value={shopName}
-                    onChange={(e) => setShopName(e.target.value)}
-                    required
+                    readOnly
+                    disabled
+                    className="bg-gray-100 cursor-not-allowed"
                 />
+                <small style={{ color: "#666", marginTop: "4px" }}>Automatically set to your company name</small>
             </div>
             <button className="btn btn-primary" type="submit" disabled={mutation.isLoading}>
                 {mutation.isLoading ? "Adding..." : "Add Product"}

@@ -24,7 +24,7 @@ const OwnerLoginForm = () => {
         // localStorage.setItem('owner_id', owner_id); // Save owner_id
         localStorage.setItem('token', response.data.token);
 
-        navigate('/owner-home'); // Redirect to Owner page
+        navigate('/owner'); // Redirect to Owner page
       }
     } catch (err) {
       console.error("AxiosError:", err); // Log detailed error

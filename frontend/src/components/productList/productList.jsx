@@ -42,8 +42,8 @@ const ProductList = ({ ownerId }) => {
     return (
         <div className="product_list">
             <div className="head">
-                <h1>Product List</h1>
-                <button onClick={handleAddProductClick}>
+                <h1 className="head text-[24px] font-semibold">Product List</h1>
+                <button className="btn-primary" onClick={handleAddProductClick}>
                     {showForm ? "Close Form" : "Add Product"}
                 </button>
             </div>
@@ -68,7 +68,6 @@ const ProductList = ({ ownerId }) => {
                     {data.map((product) => (
                         <tr className="pid" key={product.product_id}>
                             <td className="pid" >{product.product_id}</td>
-
                             {/* 💡 CHANGE 1: Create the cell for the image */}
                             <td>
                                 {product.photo ? (
@@ -84,7 +83,6 @@ const ProductList = ({ ownerId }) => {
                                     <span>No Image</span>
                                 )}
                             </td>
-
                             <td>{product.product_name}</td>
                             <td>{product.description}</td>
                             <td>{product.price}</td>
@@ -104,7 +102,5 @@ export default ProductList;
 
 
 
-
-// while the button is clicked, i want you to show the productForm .jsx. i ve already created the productForm.jsx, you just import and create a function on click.
 
 
