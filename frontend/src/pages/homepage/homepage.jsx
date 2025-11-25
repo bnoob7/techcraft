@@ -113,10 +113,10 @@ const Homepage = () => {
 
   return (
     <div className="head-container">
-      <div className="">
+      {/* <div className="">
         <p>Welcome, {userName}!</p>
-        <p>Welcome, UserId: {userId}</p> {/* Show the userId for debugging */}
-      </div>
+        <p>Welcome, UserId: {userId}</p>
+      </div> */}
       {/* Pass the userId to Header as a prop */}
       <Header userId={userId} />
       <div className="hero">

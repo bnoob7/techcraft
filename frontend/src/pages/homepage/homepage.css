@@ -101,7 +101,7 @@ body::-webkit-scrollbar{
 }
 
 .build-card {
-  background: white;
+  /* background: white; */
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -175,7 +175,6 @@ body::-webkit-scrollbar{
   display: flex;
   gap: 1rem;
   padding: 0.75rem;
-  background: #f9fafb;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
   transition: background 0.2s ease, border-color 0.2s ease;
@@ -252,7 +251,7 @@ body::-webkit-scrollbar{
 /* Category Results Section */
 .category-results {
   padding: 2rem;
-  background: #f9fafb;
+  /* background: #f9fafb; */
   margin: 2rem 0;
   border-radius: 12px;
 }

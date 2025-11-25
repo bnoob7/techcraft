@@ -24,9 +24,6 @@ const CategoryShop = ({ onCategorySelect }) => {
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
           Shop By Category
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          Browse our wide range of tech products
-        </p>
       </div>
 
       <div className="category-grid">
