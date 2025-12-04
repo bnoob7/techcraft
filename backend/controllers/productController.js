@@ -351,3 +351,37 @@ export const getGreatDeals = (req, res) => {
         });
     });
 };
+
+// 💡 NEW: Get recommended products based on cart content (content-based filtering)
+export const getRecommendedProducts = (req, res) => {
+    const { categories, exclude_ids } = req.body;
+
+    if (!categories || !Array.isArray(categories) || categories.length === 0) {
+        return res.status(200).send([]); // Nothing to recommend
+    }
+
+    // Sanitize categories to prevent SQL injection
+    const sanitizedCategories = categories.map(cat => db.escape(cat));
+
+    // Prepare a list of IDs to exclude, ensuring they are numbers
+    const excludedIds = Array.isArray(exclude_ids) ? exclude_ids.filter(id => !isNaN(id)) : [];
+
+    let sql = `
+        SELECT * FROM products 
+        WHERE category IN (${sanitizedCategories.join(',')})
+    `;
+
+    if (excludedIds.length > 0) {
+        sql += ` AND product_id NOT IN (${excludedIds.join(',')})`;
+    }
+
+    sql += ' ORDER BY RAND() LIMIT 10'; // Get up to 10 random recommendations
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("An error occurred while fetching recommendations.");
+        }
+        res.status(200).send(results);
+    });
+};

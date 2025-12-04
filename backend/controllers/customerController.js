@@ -85,7 +85,19 @@ const loginCustomer = async (req, res) => {
         // Generate JWT token for the session
         const token = jwt.sign({ id: customer.id }, 'your_jwt_secret', { expiresIn: '1h' });
   
-        res.status(200).json({ message: 'Login successful', token });
+        // 💡 Create a user object to send to the frontend, excluding the password
+        const userForFrontend = {
+          id: customer.id,
+          name: customer.name,
+          email: customer.email,
+        };
+
+        // 💡 Send the token AND the user object in the response
+        res.status(200).json({ 
+          message: 'Login successful', 
+          token,
+          user: userForFrontend 
+        });
       });
     } catch (err) {
       console.error(err);
@@ -95,12 +107,3 @@ const loginCustomer = async (req, res) => {
   
   
 export { loginCustomer };
-
-
-
-
-
-
-
-
-

@@ -4,20 +4,22 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
 import "./cart.css";
+import { useAuth } from "../../context/AuthContext"; // 💡 1. Import the useAuth hook
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { user } = useAuth(); // 💡 2. Get the currently logged-in user from context
 
   useEffect(() => {
-    const userId = localStorage.getItem("user_id");
+    const userId = user?.id; // 💡 3. Use the user ID from the context
 
     if (userId) {
       axios
         .get(`http://localhost:5000/cart/${userId}`)
         .then((response) => {
-          console.log("Received cart items:", response.data);
+          console.log("Received cart items for user:", userId, response.data);
           if (response.data.cart && typeof response.data.cart === "object") {
             setCartItems(response.data.cart);
           } else {
@@ -34,13 +36,16 @@ const Cart = () => {
         });
     } else {
       console.error("User ID not found in localStorage");
+      // If no user, redirect to home/login page
+      navigate('/');
       setLoading(false);
     }
-  }, []);
+  }, [user, navigate]); // 💡 4. Re-run this effect if the user changes
 
   // handleBuy function to store the order in the database
   const handleBuy = (shopName) => {
-    const userId = localStorage.getItem("user_id");
+    const userId = user?.id; // 💡 5. Use the user ID from context here as well
+    if (!userId) return alert("You must be logged in to place an order.");
     const shopItems = cartItems[shopName];
   
     // Request the owner_id from the backend using shop_name from the products table

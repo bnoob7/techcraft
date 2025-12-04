@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./loginForm.css";
+import { useAuth } from "../../context/AuthContext"; // 💡 1. Standardized Import Path
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // 💡 2. Get the login function from context
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,23 +22,24 @@ const LoginForm = () => {
       });
 
       if (response.status === 200) {
-        const { token } = response.data; // Ensure your backend returns a JWT token
+        // The backend should return the user object in response.data.user
+        const { user } = response.data;
         
-        // Decode the JWT token to extract the user_id
-        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Decode JWT token
-        const userId = decodedToken.id; // Extract user ID from decoded token
-
-        // Store the token and user_id in localStorage
-        localStorage.setItem("token", token);
-        localStorage.setItem("user_id", userId); // Save user_id
-
-        navigate("/home"); // Redirect to customer homepage
+        if (user && user.id && user.name) {
+          // 💡 3. Use the context's login function to set the user globally
+          login(user);
+          navigate("/home"); // Redirect to customer homepage
+        } else {
+          // This error occurs if the backend response is missing the user object.
+          setError("Login successful, but user data is missing in the response.");
+        }
       } else {
         setError("Login failed");
       }
     } catch (err) {
       console.error("Error:", err);
-      setError("Invalid email or password");
+      // Provide more specific feedback from the backend if available
+      setError(err.response?.data?.message || "Invalid email or password");
     }
   };
 

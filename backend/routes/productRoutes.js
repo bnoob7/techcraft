@@ -8,6 +8,7 @@ import {
   searchProducts,
   getNewestProducts,
   getGreatDeals,
+  getRecommendedProducts,
 } from "../controllers/productController.js";
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router.get("/pc-build", getPCBuildSuggestions); // 💡 Must come before /:param
 router.get("/search", searchProducts); // 💡 NEW: Endpoint for combined search
 router.get("/newest", getNewestProducts); // 💡 NEW: Endpoint for newest products
 router.get("/deals", getGreatDeals); // 💡 NEW: Endpoint for great deals
+router.post("/recommendations", getRecommendedProducts); // 💡 NEW: Endpoint for content-based recommendations
 router.get("/", getProducts);
 router.get("/owner/:shop_name", getOwnerByShopName);
 

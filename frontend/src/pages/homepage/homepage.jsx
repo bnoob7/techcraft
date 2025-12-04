@@ -1,17 +1,19 @@
 import Header from '../../components/header/header';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, MonitorSmartphone, HardDrive, Headphones, Zap, Fan, MemoryStick, CircuitBoard, ShoppingCart, TrendingUp, Package, Smartphone, Cable, Sparkles, Clock, DollarSign, Bot } from 'lucide-react';
+import { Search, Cpu, MonitorSmartphone, HardDrive, Headphones, Zap, Fan, MemoryStick, CircuitBoard, ShoppingCart, TrendingUp, Package, Smartphone, Cable, Sparkles, Clock, DollarSign, Bot, Star } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 
 
 const Homepage = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // This will now also cover the user check
   // States for new recommendation sections
   const [newestProducts, setNewestProducts] = useState([]);
   const [greatDeals, setGreatDeals] = useState([]);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [cart, setCart] = useState([]);
@@ -22,6 +24,7 @@ const Homepage = () => {
   const [buildsLoading, setBuildsLoading] = useState(false);
   const [buildsError, setBuildsError] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth(); // 💡 Get user directly from context
 
   // Category configuration with icons
   const categories = [
@@ -44,12 +47,19 @@ const Homepage = () => {
     fetchProducts();
     fetchNewestProducts();
     fetchGreatDeals();
+    // The loading state is now simpler as user is handled globally
+    setLoading(false);
   }, []);
 
   // Filter products when search or category changes
   useEffect(() => {
     filterProducts();
   }, [searchQuery, selectedCategory, products]);
+
+  // Fetch recommendations when cart changes
+  useEffect(() => {
+    fetchRecommendedProducts();
+  }, [cart]);
 
   const fetchProducts = async () => {
     try {
@@ -61,7 +71,7 @@ const Homepage = () => {
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
-      setLoading(false);
+      // setLoading(false); // This is now handled in the initial useEffect
     }
   };
 
@@ -82,6 +92,28 @@ const Homepage = () => {
       setGreatDeals(data);
     } catch (error) {
       console.error('Error fetching great deals:', error);
+    }
+  };
+
+  const fetchRecommendedProducts = async () => {
+    if (cart.length === 0) {
+      setRecommendedProducts([]);
+      return;
+    }
+
+    try {
+      const categories = [...new Set(cart.map(item => item.category))];
+      const exclude_ids = cart.map(item => item.product_id);
+
+      const response = await fetch('http://localhost:5000/products/recommendations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categories, exclude_ids }),
+      });
+      const data = await response.json();
+      setRecommendedProducts(data);
+    } catch (error) {
+      console.error('Error fetching recommended products:', error);
     }
   };
 
@@ -138,6 +170,10 @@ const Homepage = () => {
     navigate(`/product/${productId}`);
   };
 
+  const handleLogout = () => {
+    setCart([]);
+  };
+
   const handleGetBuilds = async () => {
     if (!budget || isNaN(budget) || budget <= 0) {
       setBuildsError('Please enter a valid budget amount.');
@@ -180,6 +216,15 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 
+  // 💡 Render a loading screen until user and products are checked/loaded
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'var(--background-dark)', color: 'var(--text-head)' }}>
+        <h2>Loading Your Experience...</h2>
+      </div>
+    );
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -187,7 +232,7 @@ useEffect(() => {
       paddingBottom: '60px'
     }}>
       {/* Header Section */}
-      <Header cart={cart} style={{
+      <Header cart={cart} onLogout={handleLogout} style={{
         backgroundColor: 'var(--background-elevate)',
         padding: '24px',
         borderBottom: '1px solid var(--grey-900)',
@@ -195,92 +240,19 @@ useEffect(() => {
         top: 0,
         zIndex: 110
       }} />
-      <header style={{
-        // backgroundColor: 'var(--background-elevate)',
-        padding: '24px',
-        // borderBottom: '1px solid var(--grey-900)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100
-      }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          {/* <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginBottom: '24px'
-          }}>
-            <h1 style={{ 
-              fontSize: '32px', 
-              color: 'var(--text-head)',
-              fontWeight: 700
-            }}>
-              PC Parts Store
-            </h1>
-            <div style={{ position: 'relative' }}>
-              <ShoppingCart 
-                size={28} 
-                color="var(--text-head)"
-                style={{ cursor: 'pointer' }}
-              />
-              {cart.length > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  right: '-8px',
-                  backgroundColor: 'var(--primary-color)',
-                  color: '#fff',
-                  borderRadius: '50%',
-                  width: '20px',
-                  height: '20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
-                }}>
-                  {cart.length}
-                </span>
-              )}
-            </div>
-          </div> */}
 
-          {/* Search Bar */}
-          <div style={{ position: 'relative', width: '500px' }}>
-            <Search
-              size={20}
-              color="var(--text-para)"
-              style={{
-                position: 'absolute',
-                left: '16px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                pointerEvents: 'none'
-              }}
-            />
-            <input
-              type="text"
-              placeholder="Search products by name or category..."
-              value={searchQuery}
-              onChange={handleSearch}
-              style={{
-                width: '100%',
-                paddingLeft: '48px',
-                backgroundColor: 'var(--background-dark)',
-                color: 'var(--text-head)',
-                border: '1px solid var(--grey-900)',
-                marginBottom: 0
-              }}
-            />
-          </div>
+      {/* 💡 Welcome message for logged-in user */}
+      {user && (
+        <div style={{
+          maxWidth: '1400px',
+          margin: '24px auto 0 auto',
+          padding: '0 24px',
+          color: 'var(--text-head)'
+        }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 600 }}>Welcome back, {user.name}!</h1>
+          <p style={{ color: 'var(--text-para)', marginTop: '4px' }}>Let's find your next piece of tech.</p>
         </div>
-      </header>
-
-      {/* <div className="banner-wrapper" style={{ maxWidth: '1400px', margin: '0 auto', marginBottom: '24px' }}>
-        <div className="banner">
-        <img src="../../banner/blackfriday.webp" alt="PC Parts Store Banner" style={{ width: '100%', height: 'auto' }} />
-      </div>
-      </div> */}
+      )}
 
       
 
@@ -363,6 +335,51 @@ useEffect(() => {
           </div>
         </div>
       </section>
+
+
+
+      <div className="search-bar" style={{
+        // backgroundColor: 'var(--background-elevate)',
+        padding: '24px',
+        // borderBottom: '1px solid var(--grey-900)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        width: '100%',
+        maxWidth: '1400px',
+        height: '120px',
+        margin: '0 auto',
+      }}>
+            {/* Search Bar */}
+          <div style={{ position: 'relative', width: '500px' }}>
+            <Search
+              size={20}
+              color="var(--text-para)"
+              style={{ 
+                position: 'absolute',
+                left: '16px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none',
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Search products by name or category..."
+              value={searchQuery}
+              onChange={handleSearch}
+              style={{
+                width: '100%',
+                paddingLeft: '48px',
+                backgroundColor: 'var(--background-dark)',
+                color: 'var(--text-head)',
+                border: '1px solid var(--grey-900)',
+                marginBottom: 0
+              }}
+            />
+          </div>
+        
+      </div>
 
 
 
@@ -559,6 +576,7 @@ useEffect(() => {
 
       {/* 💡 Recommendation Sections */}
       <ProductCarousel title="Great Value Deals" products={greatDeals} icon={Sparkles} onProductClick={handleProductClick} onAddToCart={addToCart} />
+      <ProductCarousel title="Recommended For You" products={recommendedProducts} icon={Star} onProductClick={handleProductClick} onAddToCart={addToCart} />
       <ProductCarousel title="Newest Arrivals" products={newestProducts} icon={Clock} onProductClick={handleProductClick} onAddToCart={addToCart} />
 
 

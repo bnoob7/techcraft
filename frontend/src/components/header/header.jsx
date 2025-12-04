@@ -1,26 +1,35 @@
 import React, { useState } from "react";
 import "./header.css";
 import Logo from "../../../public/logo/logo.svg";
-import { FaShoppingBag } from "react-icons/fa";
+import { FaShoppingBag, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // 💡 Import the useAuth hook
 
-const Header = ({ userId }) => {  // Receive userId as a prop
+const Header = ({ cart, onLogout }) => {
   const [menu, setMenu] = useState("menu");
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout: authLogout } = useAuth(); // 💡 Get user and logout from context
 
   // Check if the user is navigating admin/owner pages
   const isAdminOrOwner = location.pathname === "/admin" || location.pathname === "/owner";
 
-  // Handle cart button click
+  // 💡 The user object from context is now the source of truth
+  const isLoggedIn = !!user;
+
+  // Handle cart button click using the user from context
   const handleCartClick = () => {
-    if (userId) {
-      navigate(`/cart/${userId}`);
+    if (user && user.id) {
+      navigate(`/cart/${user.id}`);
     } else {
-      console.error("User is not logged in, no userId found.");
-      // Handle unlogged-in users, e.g., redirect to login page
-      navigate("/login");
+      navigate("/");
     }
+  };
+
+  const handleLogout = () => {
+    authLogout(); // 💡 Call the logout function from context
+    if (onLogout) onLogout(); // Call the passed onLogout function to clear cart state
+    navigate('/'); // Redirect to home/login page
   };
 
   const handleNavigation = (page) => {
@@ -69,12 +78,24 @@ const Header = ({ userId }) => {  // Receive userId as a prop
           </ul>
         </div>
         <div className="link-wrapper">
-          {/* Display cart icon unless on admin or owner page */}
-          {!isAdminOrOwner && (
-            <button className="btn-text" onClick={handleCartClick}>
-              <FaShoppingBag /> <div className="dot"></div>
-              <span className="user-id">{userId}</span> {/* Display userId here */}
-            </button>
+          {/* Conditionally render based on login status and page */}
+          {isLoggedIn && !isAdminOrOwner && (
+            <>
+              <button className="btn-text" onClick={handleCartClick}>
+                <FaShoppingBag />
+                {cart && cart.length > 0 && (
+                  <div className="dot">{cart.length}</div>
+                )}
+              </button>
+              <button className="btn-text" onClick={handleLogout} title="Logout">
+                <FaSignOutAlt />
+              </button>
+            </>
+          )}
+          {!isLoggedIn && !isAdminOrOwner && (
+             <button className="btn-primary" onClick={() => navigate('/')}>
+                Login
+             </button>
           )}
         </div>
       </header>
