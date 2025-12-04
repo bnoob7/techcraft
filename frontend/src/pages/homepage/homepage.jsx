@@ -1,15 +1,24 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Cpu, MonitorSmartphone, HardDrive, Headphones, Zap, Fan, MemoryStick, CircuitBoard, ShoppingCart, TrendingUp, Package, Smartphone, Cable } from 'lucide-react';
+import { Search, Cpu, MonitorSmartphone, HardDrive, Headphones, Zap, Fan, MemoryStick, CircuitBoard, ShoppingCart, TrendingUp, Package, Smartphone, Cable, Sparkles, Clock, DollarSign, Bot } from 'lucide-react';
 
 const Homepage = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  // States for new recommendation sections
+  const [newestProducts, setNewestProducts] = useState([]);
+  const [greatDeals, setGreatDeals] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [cart, setCart] = useState([]);
+
+  // State for PC Build Suggestions
+  const [budget, setBudget] = useState('');
+  const [pcBuilds, setPcBuilds] = useState([]);
+  const [buildsLoading, setBuildsLoading] = useState(false);
+  const [buildsError, setBuildsError] = useState('');
   const navigate = useNavigate();
 
   // Category configuration with icons
@@ -31,6 +40,8 @@ const Homepage = () => {
   // Fetch all products on component mount
   useEffect(() => {
     fetchProducts();
+    fetchNewestProducts();
+    fetchGreatDeals();
   }, []);
 
   // Filter products when search or category changes
@@ -49,6 +60,26 @@ const Homepage = () => {
       console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchNewestProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/products/newest');
+      const data = await response.json();
+      setNewestProducts(data);
+    } catch (error) {
+      console.error('Error fetching newest products:', error);
+    }
+  };
+
+  const fetchGreatDeals = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/products/deals');
+      const data = await response.json();
+      setGreatDeals(data);
+    } catch (error) {
+      console.error('Error fetching great deals:', error);
     }
   };
 
@@ -103,6 +134,30 @@ const Homepage = () => {
 
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
+  };
+
+  const handleGetBuilds = async () => {
+    if (!budget || isNaN(budget) || budget <= 0) {
+      setBuildsError('Please enter a valid budget amount.');
+      return;
+    }
+    setBuildsLoading(true);
+    setBuildsError('');
+    setPcBuilds([]);
+
+    try {
+      const response = await fetch(`http://localhost:5000/products/pc-build?budget=${budget}`);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch builds.');
+      }
+      setPcBuilds(data);
+    } catch (error) {
+      setBuildsError(error.message);
+      console.error('Error fetching PC builds:', error);
+    } finally {
+      setBuildsLoading(false);
+    }
   };
 
   return (
@@ -258,6 +313,123 @@ const Homepage = () => {
           </div>
         </div>
       </section>
+
+      {/* 💡 PC Build Helper Section */}
+      <section style={{ maxWidth: '1400px', margin: '0 auto', padding: '48px 24px' }}>
+        <div style={{
+          backgroundColor: 'var(--background-elevate)',
+          padding: '32px',
+          borderRadius: '16px',
+          border: '1px solid var(--grey-900)',
+          textAlign: 'center'
+        }}>
+          <Bot size={48} color="var(--primary-color)" style={{ margin: '0 auto 16px auto' }} />
+          <h2 style={{ fontSize: '28px', color: 'var(--text-head)', fontWeight: 700, marginBottom: '8px' }}>
+            PC Build Helper
+          </h2>
+          <p style={{ fontSize: '16px', color: 'var(--text-para)', marginBottom: '24px', maxWidth: '600px', margin: '0 auto 24px auto' }}>
+            Tell us your budget, and our AI will suggest the best PC builds for your needs, from budget-friendly to high-end gaming rigs.
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '24px' }}>
+            <div style={{ position: 'relative', width: '300px' }}>
+              <DollarSign size={20} color="var(--text-para)" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
+              <input
+                type="number"
+                placeholder="Enter your budget"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                style={{ width: '100%', paddingLeft: '48px' }}
+              />
+            </div>
+            <button onClick={handleGetBuilds} disabled={buildsLoading} className="btn-primary" style={{ height: '48px' }}>
+              {buildsLoading ? 'Finding Builds...' : 'Get Suggestions'}
+            </button>
+          </div>
+          {buildsError && <p style={{ color: '#F44336', marginTop: '16px' }}>{buildsError}</p>}
+        </div>
+
+        {/* PC Builds Results */}
+        {buildsLoading && <p style={{ textAlign: 'center', color: 'var(--text-para)', marginTop: '24px' }}>Loading suggestions...</p>}
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+          gap: '24px',
+          marginTop: '32px'
+        }}>
+          {pcBuilds.map((build) => (
+            <div key={build.buildType} style={{
+              backgroundColor: 'var(--background-elevate)',
+              borderRadius: '12px',
+              border: '1px solid var(--grey-900)',
+              padding: '24px'
+            }}>
+              <h3 style={{
+                fontSize: '20px',
+                color: 'var(--text-head)',
+                fontWeight: 600,
+                textTransform: 'capitalize',
+                marginBottom: '16px',
+                borderBottom: '1px solid var(--grey-900)',
+                paddingBottom: '16px'
+              }}>
+                {build.buildType.replace('-', ' ')} Build
+              </h3>
+              
+              <div style={{ marginBottom: '16px' }}>
+                {build.components.map(component => (
+                  <div key={component.product_id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    marginBottom: '8px',
+                    fontSize: '14px',
+                    color: 'var(--text-para)'
+                  }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '4px',
+                      overflow: 'hidden',
+                      backgroundColor: 'var(--background-dark)'
+                    }}>
+                      <img 
+                        src={`http://localhost:5000/${component.photo.replace(/\\/g, "/")}`} 
+                        alt={component.product_name} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                    <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{component.product_name}</span>
+                    <span style={{ fontWeight: 600, color: 'var(--text-head)' }}>${parseFloat(component.price).toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{
+                borderTop: '1px solid var(--grey-900)',
+                paddingTop: '16px',
+                marginTop: '16px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '16px', color: 'var(--text-para)' }}>Total Cost:</span>
+                  <span style={{ fontSize: '22px', fontWeight: 700, color: 'var(--primary-color)' }}>
+                    ${build.totalCost}
+                  </span>
+                </div>
+                <button
+                  onClick={() => build.components.forEach(c => addToCart(c))}
+                  className="btn-primary"
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                >
+                  <ShoppingCart size={18} />
+                  Add Build to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
 
       {/* Products Grid */}
       <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px 24px' }}>
@@ -448,12 +620,146 @@ const Homepage = () => {
           </div>
         )}
       </main>
+
+            {/* 💡 Recommendation Sections */}
+      <ProductCarousel title="Great Value Deals" products={greatDeals} icon={Sparkles} onProductClick={handleProductClick} onAddToCart={addToCart} />
+      <ProductCarousel title="Newest Arrivals" products={newestProducts} icon={Clock} onProductClick={handleProductClick} onAddToCart={addToCart} />
+
+
+
     </div>
   );
 };
 
 export default Homepage;
+const ProductCarousel = ({ title, products, icon: Icon, onProductClick, onAddToCart }) => {
+  if (!products || products.length === 0) {
+    return null; // Don't render if there are no products
+  }
 
+  return (
+    <section style={{
+      maxWidth: '1400px',
+      margin: '0 auto',
+      padding: '48px 24px 0 24px'
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        marginBottom: '24px'
+      }}>
+        {Icon && <Icon size={24} color="var(--primary-color)" />}
+        <h2 style={{
+          fontSize: '24px',
+          color: 'var(--text-head)',
+          fontWeight: 600
+        }}>
+          {title}
+        </h2>
+      </div>
+      <div style={{
+        display: 'grid',
+        gridAutoFlow: 'column',
+        gridAutoColumns: 'minmax(280px, 1fr)',
+        gap: '24px',
+        overflowX: 'auto',
+        paddingBottom: '24px' // For scrollbar visibility
+      }}>
+        {products.map((product) => (
+          <div
+            key={product.product_id}
+            onClick={() => onProductClick(product.product_id)}
+            style={{
+              backgroundColor: 'var(--background-elevate)',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              border: '1px solid var(--grey-900)',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+              width: '280px' // Fixed width for carousel items
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.borderColor = 'var(--primary-color)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.borderColor = 'var(--grey-900)';
+            }}
+          >
+            {/* Product Image */}
+            <div style={{
+              width: '100%',
+              height: '200px',
+              backgroundColor: 'var(--background-dark)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {product.photo ? (
+                <img
+                  src={`http://localhost:5000/${product.photo.replace(/\\/g, "/")}`}
+                  alt={product.product_name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <Package size={64} color="var(--text-para)" />
+              )}
+            </div>
 
+            {/* Product Info */}
+            <div style={{ padding: '16px' }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: 'var(--text-head)',
+                marginBottom: '8px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}>
+                {product.product_name}
+              </h3>
 
+              <p style={{
+                fontSize: '12px',
+                color: 'var(--primary-color)',
+                textTransform: 'uppercase',
+                fontWeight: 600,
+                marginBottom: '12px'
+              }}>
+                {product.category}
+              </p>
 
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span style={{
+                  fontSize: '22px',
+                  fontWeight: 700,
+                  color: 'var(--primary-color)'
+                }}>
+                  ${parseFloat(product.price).toFixed(2)}
+                </span>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddToCart(product);
+                  }}
+                  className="btn-primary"
+                  style={{ height: '36px', padding: '0 16px' }}
+                >
+                  <ShoppingCart size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
