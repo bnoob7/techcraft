@@ -7,6 +7,7 @@ import Home from './pages/homepage/homepage'
 import Owner from './pages/owner/owner';
 import Admin from './pages/admin/admin';
 import CartPage from './pages/cart/cart'
+import ProductDetails from './pages/productDetails'; // 💡 Import the new page
 
 import './app.css'
 
@@ -32,6 +33,7 @@ const App = () => {
           <Route path="/admin" element={<Admin />} />
           <Route path="/owner" element={<Owner />} />
           <Route path="/cart/:userId" element={<CartPage />} />
+          <Route path="/product/:productId" element={<ProductDetails />} /> {/* 💡 Add route for product details */}
 
 
 

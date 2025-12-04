@@ -316,6 +316,7 @@
 
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Cpu, MonitorSmartphone, HardDrive, Mic, Zap, Fan, MemoryStick, CircuitBoard, ShoppingCart, TrendingUp, Package } from 'lucide-react';
 
 const Homepage = () => {
@@ -325,6 +326,7 @@ const Homepage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
 
   // Category configuration with icons
   const categories = [
@@ -410,6 +412,10 @@ const Homepage = () => {
     setCart(prev => [...prev, product]);
     // You can add toast notification here
     console.log('Added to cart:', product.product_name);
+  };
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -623,7 +629,8 @@ const Homepage = () => {
           }}>
             {filteredProducts.map((product) => (
               <div
-                key={product.id}
+                key={product.product_id}
+                onClick={() => handleProductClick(product.product_id)}
                 style={{
                   backgroundColor: 'var(--background-elevate)',
                   borderRadius: '12px',
@@ -655,7 +662,7 @@ const Homepage = () => {
                 }}>
                   {product.photo ? (
                     <img
-                      src={`http://localhost:5000/${product.photo}`}
+                      src={`http://localhost:5000/${product.photo.replace(/\\/g, "/")}`}
                       alt={product.product_name}
                       style={{
                         width: '100%',
@@ -731,7 +738,10 @@ const Homepage = () => {
                     </span>
 
                     <button
-                      onClick={() => addToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent navigation when clicking the button
+                        addToCart(product);
+                      }}
                       className="btn-primary"
                       style={{
                         height: '40px',
