@@ -90,7 +90,7 @@ const Homepage = () => {
 
     // Filter by category
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => 
+      filtered = filtered.filter(product =>
         product.category?.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
@@ -162,21 +162,39 @@ const Homepage = () => {
     }
   };
 
+  const banners = [
+      "../../banner/banner1.webp",
+      "../../banner/banner2.webp",
+      "../../banner/banner3.webp",
+      // "../../banner/banner4.webp",s
+      "../../banner/banner5.webp",
+      ];
+
+      const [currentBanner, setCurrentBanner] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+        setCurrentBanner(prev => (prev + 1) % banners.length);
+  }, 5000);
+
+  return () => clearInterval(interval);
+}, []);
+
   return (
-    <div style={{ 
-      minHeight: '100vh', 
+    <div style={{
+      minHeight: '100vh',
       backgroundColor: 'var(--background-dark)',
       paddingBottom: '60px'
     }}>
       {/* Header Section */}
-      <Header cart={cart}  style={{
+      <Header cart={cart} style={{
         backgroundColor: 'var(--background-elevate)',
         padding: '24px',
         borderBottom: '1px solid var(--grey-900)',
         position: 'sticky',
         top: 0,
         zIndex: 110
-      }}/>
+      }} />
       <header style={{
         // backgroundColor: 'var(--background-elevate)',
         padding: '24px',
@@ -229,8 +247,8 @@ const Homepage = () => {
 
           {/* Search Bar */}
           <div style={{ position: 'relative', width: '500px' }}>
-            <Search 
-              size={20} 
+            <Search
+              size={20}
               color="var(--text-para)"
               style={{
                 position: 'absolute',
@@ -258,11 +276,24 @@ const Homepage = () => {
         </div>
       </header>
 
-      <div className="banner-wrapper" style={{ maxWidth: '1400px', margin: '0 auto', marginBottom: '24px' }}>
+      {/* <div className="banner-wrapper" style={{ maxWidth: '1400px', margin: '0 auto', marginBottom: '24px' }}>
         <div className="banner">
         <img src="../../banner/blackfriday.webp" alt="PC Parts Store Banner" style={{ width: '100%', height: 'auto' }} />
       </div>
-      </div>
+      </div> */}
+
+      
+
+<div className="banner-wrapper" 
+     style={{ maxWidth: '1400px', margin: '0 auto', marginBottom: '24px', position: 'relative', overflow: 'hidden' }}>
+
+  <img 
+    key={currentBanner}
+    src={banners[currentBanner]}
+    alt="PC Parts Store Banner"
+    style={{ width: '100%', height: 'auto', transition: 'opacity 0.5s ease-in-out', opacity: 1 }}
+  />
+</div>
 
 
 
@@ -283,7 +314,7 @@ const Homepage = () => {
             {categories.map((category) => {
               const IconComponent = category.icon;
               const isActive = selectedCategory === category.id;
-              
+
               return (
                 <div
                   key={category.id}
@@ -314,8 +345,8 @@ const Homepage = () => {
                     }
                   }}
                 >
-                  <IconComponent 
-                    size={32} 
+                  <IconComponent
+                    size={32}
                     color={isActive ? '#FFFFFF' : 'var(--text-head)'}
                   />
                   <span style={{
@@ -333,7 +364,7 @@ const Homepage = () => {
         </div>
       </section>
 
-      
+
 
 
       {/* Products Grid */}
@@ -526,7 +557,7 @@ const Homepage = () => {
         )}
       </main>
 
-            {/* 💡 Recommendation Sections */}
+      {/* 💡 Recommendation Sections */}
       <ProductCarousel title="Great Value Deals" products={greatDeals} icon={Sparkles} onProductClick={handleProductClick} onAddToCart={addToCart} />
       <ProductCarousel title="Newest Arrivals" products={newestProducts} icon={Clock} onProductClick={handleProductClick} onAddToCart={addToCart} />
 
@@ -567,7 +598,7 @@ const Homepage = () => {
 
         {/* PC Builds Results */}
         {buildsLoading && <p style={{ textAlign: 'center', color: 'var(--text-para)', marginTop: '24px' }}>Loading suggestions...</p>}
-        
+
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
@@ -592,7 +623,7 @@ const Homepage = () => {
               }}>
                 {build.buildType.replace('-', ' ')} Build
               </h3>
-              
+
               <div style={{ marginBottom: '16px' }}>
                 {build.components.map(component => (
                   <div key={component.product_id} style={{
@@ -610,9 +641,9 @@ const Homepage = () => {
                       overflow: 'hidden',
                       backgroundColor: 'var(--background-dark)'
                     }}>
-                      <img 
-                        src={`http://localhost:5000/${component.photo.replace(/\\/g, "/")}`} 
-                        alt={component.product_name} 
+                      <img
+                        src={`http://localhost:5000/${component.photo.replace(/\\/g, "/")}`}
+                        alt={component.product_name}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     </div>

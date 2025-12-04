@@ -26,12 +26,12 @@ const Header = ({ userId }) => {  // Receive userId as a prop
   const handleNavigation = (page) => {
     setMenu(page);
     if (page === "Home") {
-      if (location.pathname === "/admin-home") {
-        navigate("/admin-home");
+      if (location.pathname === "/admin") {
+        navigate("/admin");
       } else if (location.pathname === "/owner-home") {
         navigate("/owner-home");
       } else {
-        navigate("/customer-home");
+        navigate("/home");
       }
     } else if (page === "About-Us") {
       navigate("/about-us");

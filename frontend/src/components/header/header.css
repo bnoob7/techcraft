@@ -8,9 +8,7 @@
 
 }
 .container{
-    border: 1px solid red;
-    
-    background-color: red;
+    background-color: var(--background-elevate);
 }
 
 header {
@@ -49,13 +47,13 @@ header {
     font-size: 20px;
     font-weight: 500;
     line-height: 28px;
-    color: #000;
+    color: #var(--text-head);
     padding: 0 2px;
     border-bottom: 2px solid rgba(71, 88, 52, 0.0);
 }
 
 .pages ul li:hover {
-    color: #000;
+    color: var(--text-para);
     cursor: pointer;
 }
 
@@ -80,7 +78,7 @@ header {
     font-size: 24px;
     font-weight: 500;
     line-height: 20px;
-    color: black;
+    color: var(--text-head);
     display: flex;
     align-items: center;
     gap: 4px;
